@@ -81,6 +81,7 @@ public class DownloadThread implements Runnable {
                 raf = new RandomAccessFile(file, "rw");
                 raf.seek(startPos);
                 is = connection.getInputStream();
+//                BUFFER值不能太大，不然容易OOM
                 byte[] buffer = new byte[4096];
                 int len = 0;
                 while ((len = is.read(buffer)) != -1) {
@@ -110,23 +111,29 @@ public class DownloadThread implements Runnable {
                         break;
                     }
                     fos.write(buffer, 0, len);
-                    listener.onThreadProgressChanged(index, len);
+//                    加上同步锁 防止并发而造成的数据脏读
+                    synchronized (listener) {
+                        listener.onThreadProgressChanged(index, len);
+                    }
                 }
                 fos.close();
                 is.close();
             }
-            if (isPaused) {
-                mStatus = DownloadEntry.DownloadStatus.paused;
-                listener.onDownloadPaused(index);
-            } else if (isCancelled) {
-                mStatus = DownloadEntry.DownloadStatus.cancel;
-                listener.onDownloadCancel(index);
-            } else if (isError) {
-                mStatus = DownloadEntry.DownloadStatus.error;
-                listener.onDownloadCancel(index);
-            } else {
-                mStatus = DownloadEntry.DownloadStatus.completed;
-                listener.onDownLoadCompleted(index);
+//
+            synchronized (listener) {
+                if (isPaused) {
+                    mStatus = DownloadEntry.DownloadStatus.paused;
+                    listener.onDownloadPaused(index);
+                } else if (isCancelled) {
+                    mStatus = DownloadEntry.DownloadStatus.cancel;
+                    listener.onDownloadCancel(index);
+                } else if (isError) {
+                    mStatus = DownloadEntry.DownloadStatus.error;
+                    listener.onDownloadCancel(index);
+                } else {
+                    mStatus = DownloadEntry.DownloadStatus.completed;
+                    listener.onDownLoadCompleted(index);
+                }
             }
         } catch (IOException e) {
             if (isPaused) {
@@ -183,6 +190,10 @@ public class DownloadThread implements Runnable {
     public void cancelByError() {
         isError = true;
         Thread.currentThread().interrupt();
+    }
+
+    public boolean isCompleted() {
+        return mStatus== DownloadEntry.DownloadStatus.completed;
     }
 
 

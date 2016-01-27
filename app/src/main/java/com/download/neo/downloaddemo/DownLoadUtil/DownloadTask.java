@@ -27,6 +27,10 @@ public class DownloadTask implements ConnectThread.ConnectListener, DownloadThre
     //    当前线程剩余下载的量
     private int surplusprogress;
     private DownloadThread[] mDownloadThreads;
+    private int temDivide = 0;
+    private long mLastStamp;
+    //    记录每个线程的状态
+    private DownloadEntry.DownloadStatus[] mdownloadStatus;
 
     @Override
     public void onConnected(boolean isSupportRange, int totalLength) {
@@ -75,7 +79,44 @@ public class DownloadTask implements ConnectThread.ConnectListener, DownloadThre
      *********/
     @Override
     public synchronized void onDownLoadCompleted(int index) {
+        mdownloadStatus[index]= DownloadEntry.DownloadStatus.completed;
 
+        for (int i = 0; i < mdownloadStatus.length; i++) {
+            if (mdownloadStatus[i] != DownloadEntry.DownloadStatus.completed) {
+                return;
+            }
+
+        }
+//        for (int i = 0; i < mDownloadThreads.length; i++) {
+//            if (mDownloadThreads[i] != null) {
+//                if (!mDownloadThreads[i].isCompleted()) {
+//                    return;
+//                }
+//            }
+//        }
+        //异常情况，把他删掉
+        if (entry.totalLength > 0 && entry.currentLength != entry.totalLength) {
+            entry.status = DownloadEntry.DownloadStatus.error;
+//            删除文件
+            entry.reset();
+            String url = entry.url;
+            String path = Environment.getExternalStorageDirectory() + File.separator +
+                    "neodownload" +
+                    File.separator + url.substring(url.lastIndexOf("/") + 1);
+            File file = new File(path);
+//        删除文件
+            if (file.exists()) {
+                file.delete();
+            }
+            notifyUpdate(entry, DownloadService.NOTITY_ERROR);
+        } else {
+            entry.status = DownloadEntry.DownloadStatus.completed;
+            MyTrace.d("thread" + index + " is " + entry.status + " with " + entry.currentLength +
+                    "/"
+                    + entry
+                    .totalLength);
+            notifyUpdate(entry, DownloadService.NOTIFI_COMPLETED);
+        }
     }
 
     /**
@@ -87,20 +128,32 @@ public class DownloadTask implements ConnectThread.ConnectListener, DownloadThre
     @Override
     public synchronized void onDownLoadError(int index, String message) {
         MyTrace.d(message);
-        boolean isAllerror = true;
-        for (int i = 0; i < mDownloadThreads.length; i++) {
-            if (mDownloadThreads[i] != null) {
-                //所有的线程都出错才去发出通知
-                if (!mDownloadThreads[i].isError()) {
-                    isAllerror = false;
-                    mDownloadThreads[i].cancelByError();
-                }
+        mdownloadStatus[index]= DownloadEntry.DownloadStatus.error;
+
+        for (int i = 0; i < mdownloadStatus.length; i++) {
+            if (mdownloadStatus[i] != DownloadEntry.DownloadStatus.error||mdownloadStatus[i]!= DownloadEntry.DownloadStatus.completed) {
+                mDownloadThreads[i].cancelByError();
+                return;
             }
+
         }
-        if (isAllerror) {
-            entry.status = DownloadEntry.DownloadStatus.error;
-            notifyUpdate(entry, DownloadService.NOTITY_ERROR);
-        }
+        entry.status = DownloadEntry.DownloadStatus.error;
+        notifyUpdate(entry, DownloadService.NOTITY_ERROR);
+
+
+
+//        boolean isAllerror = true;
+//        for (int i = 0; i < mDownloadThreads.length; i++) {
+//            if (mDownloadThreads[i] != null) {
+//                //所有的线程都出错才去发出通知
+//                if (!mDownloadThreads[i].isError()) {
+//                    isAllerror = false;
+//                    mDownloadThreads[i].cancelByError();
+//                }
+//            }
+//        }
+//        if (isAllerror) {
+//        }
     }
 
     /**
@@ -110,13 +163,22 @@ public class DownloadTask implements ConnectThread.ConnectListener, DownloadThre
      */
     @Override
     public synchronized void onDownloadPaused(int index) {
-        for (int i = 0; i < mDownloadThreads.length; i++) {
-            if (mDownloadThreads[i] != null) {
-                if (!mDownloadThreads[i].isPaused()) {
-                    return;
-                }
+        mdownloadStatus[index]= DownloadEntry.DownloadStatus.paused;
+
+        for (int i = 0; i < mdownloadStatus.length; i++) {
+            if (mdownloadStatus[i] != DownloadEntry.DownloadStatus.paused||mdownloadStatus[i]!= DownloadEntry.DownloadStatus.completed) {
+                return;
             }
+
         }
+
+//        for (int i = 0; i < mDownloadThreads.length; i++) {
+//            if (mDownloadThreads[i] != null) {
+//                if (!mDownloadThreads[i].isPaused()) {
+//                    return;
+//                }
+//            }
+//        }
         entry.status = DownloadEntry.DownloadStatus.paused;
         MyTrace.d("thread" + index + " is " + entry.status + " with " + entry.currentLength + "/"
                 + entry
@@ -134,14 +196,23 @@ public class DownloadTask implements ConnectThread.ConnectListener, DownloadThre
      */
     @Override
     public void onDownloadCancel(int index) {
-        for (int i = 0; i < mDownloadThreads.length; i++) {
-            if (mDownloadThreads[i] != null) {
-//                需要全部线程都要停止才算停止
-                if (!mDownloadThreads[i].isCancelled()) {
-                    return;
-                }
+        mdownloadStatus[index]= DownloadEntry.DownloadStatus.cancel;
+
+        for (int i = 0; i < mdownloadStatus.length; i++) {
+            if (mdownloadStatus[i] != DownloadEntry.DownloadStatus.cancel||mdownloadStatus[i]!= DownloadEntry.DownloadStatus.completed) {
+                return;
             }
+
         }
+//        for (int i = 0; i < mDownloadThreads.length; i++) {
+//            if (mDownloadThreads[i] != null) {
+////                需要全部线程都要停止才算停止
+//                if (!mDownloadThreads[i].isCancelled()) {
+//                    return;
+//                }
+//            }
+//        }
+//
         entry.status = DownloadEntry.DownloadStatus.cancel;
         entry.reset();
         String url = entry.url;
@@ -168,28 +239,33 @@ public class DownloadTask implements ConnectThread.ConnectListener, DownloadThre
             entry.ranges.put(index, currentprogress);
         }
 
+//        MyTrace.d(index + "---" + " statue " + entry.status + entry.currentLength + "/" + entry
+//                .totalLength + "");
 //        累加进度
         entry.currentLength += progress;
-        MyTrace.d(index + "---" + " statue " + entry.status + entry.currentLength + "/" + entry
-                .totalLength + "");
+        long stamp = System.currentTimeMillis();
 
-//        当前线程下载完毕
-        if (entry.currentLength == entry.totalLength) {
-            entry.percent = 100;
-            entry.status = DownloadEntry.DownloadStatus.completed;
-            notifyUpdate(entry, DownloadService.NOTIFI_COMPLETED);
-        } else {
-            int percent = (int) (entry.currentLength * 100l / entry.totalLength);
-            if (percent > entry.percent) {
-                entry.percent = percent;
-                MyTrace.d(index + "---" + " statue " + entry.status + entry.currentLength + "/" +
-                        entry
-                                .totalLength + "");
-                notifyUpdate(entry, DownloadService.NOTIFI_UPDATING);
+//        每隔XX秒更新操作  减少通知的次数
+        if (stamp - mLastStamp > 500) {
+            mLastStamp = stamp;
+            if (entry.totalLength > 0) {
+                int percent = (int) (entry.currentLength * 100l / entry.totalLength);
+                if (percent > entry.percent) {
+                    entry.percent = percent;
+//                    MyTrace.d(index + "---" + " statue " + entry.status + entry.currentLength +
+//                            "/" +
+//                            entry
+//                                    .totalLength + "");
+                    notifyUpdate(entry, DownloadService.NOTIFI_UPDATING);
+                }
+            } else {
+                int divde = entry.currentLength / (50 * 1024);
+                if (divde > temDivide) {
+                    temDivide = divde;
+                    notifyUpdate(entry, DownloadService.NOTIFI_UPDATING);
+                }
             }
         }
-
-
     }
 
     /***********
@@ -310,6 +386,7 @@ public class DownloadTask implements ConnectThread.ConnectListener, DownloadThre
      * @param what
      */
     private void notifyUpdate(DownloadEntry entry, int what) {
+//        多线程调用，如果Handler没有及时处理，将会发生消息多次回调
         Message msg = mhandler.obtainMessage();
         msg.what = what;
         msg.obj = entry;
@@ -337,6 +414,7 @@ public class DownloadTask implements ConnectThread.ConnectListener, DownloadThre
 //        若不是，则恢复下载
 
         mDownloadThreads = new DownloadThread[GlobalConstants.MAX_DOWNLOAD_THREADS];
+        mdownloadStatus = new DownloadEntry.DownloadStatus[GlobalConstants.MAX_DOWNLOAD_THREADS];
         for (int i = 0; i < GlobalConstants.MAX_DOWNLOAD_THREADS; i++) {
 //            加上剩余的进度
             startPos = i * block + entry.ranges.get(i);
@@ -350,7 +428,11 @@ public class DownloadTask implements ConnectThread.ConnectListener, DownloadThre
 //          可能有的线程已经下载完比，完成后的不用下载，剩下的才要下载
             if (startPos < endPos) {
                 mDownloadThreads[i] = new DownloadThread(i, startPos, endPos, entry.url, this);
+//                新建线程的状态
+                mdownloadStatus[i] = DownloadEntry.DownloadStatus.downloading;
                 mExecutor.execute(mDownloadThreads[i]);
+            } else {
+                mdownloadStatus[i] = DownloadEntry.DownloadStatus.completed;
             }
 
         }
