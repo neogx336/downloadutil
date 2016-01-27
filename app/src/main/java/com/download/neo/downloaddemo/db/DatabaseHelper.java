@@ -1,9 +1,9 @@
-package com.download.neo.downloaddemo.DownLoadUtil.Db;
+package com.download.neo.downloaddemo.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.download.neo.downloaddemo.DownLoadUtil.DownloadEntry;
+import com.download.neo.downloaddemo.entities.DownloadEntry;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 

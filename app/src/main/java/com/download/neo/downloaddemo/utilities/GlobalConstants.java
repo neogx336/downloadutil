@@ -1,4 +1,4 @@
-package com.download.neo.downloaddemo.DownLoadUtil;
+package com.download.neo.downloaddemo.utilities;
 
 /**
  * Created by Lenovo on 2016/1/13.

@@ -1,4 +1,4 @@
-package com.download.neo.downloaddemo.DownLoadUtil;
+package com.download.neo.downloaddemo.utilities;
 
 import android.content.Context;
 import android.widget.Toast;

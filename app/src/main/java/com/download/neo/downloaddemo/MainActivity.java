@@ -12,11 +12,11 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.download.neo.downloaddemo.DownLoadUtil.DataWatcher;
-import com.download.neo.downloaddemo.DownLoadUtil.DownloadEntry;
+import com.download.neo.downloaddemo.notify.DataWatcher;
+import com.download.neo.downloaddemo.entities.DownloadEntry;
 import com.download.neo.downloaddemo.DownLoadUtil.DownloadManager;
-import com.download.neo.downloaddemo.DownLoadUtil.MyTrace;
-import com.download.neo.downloaddemo.DownLoadUtil.ToastUtil;
+import com.download.neo.downloaddemo.utilities.MyTrace;
+import com.download.neo.downloaddemo.utilities.ToastUtil;
 
 import java.util.ArrayList;
 

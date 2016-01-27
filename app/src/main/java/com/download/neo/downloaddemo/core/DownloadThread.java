@@ -1,6 +1,10 @@
-package com.download.neo.downloaddemo.DownLoadUtil;
+package com.download.neo.downloaddemo.core;
 
 import android.os.Environment;
+
+import com.download.neo.downloaddemo.entities.DownloadEntry;
+import com.download.neo.downloaddemo.utilities.CreateFileUtil;
+import com.download.neo.downloaddemo.utilities.GlobalConstants;
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -1,8 +1,8 @@
-package com.download.neo.downloaddemo.DownLoadUtil.Db;
+package com.download.neo.downloaddemo.db;
 
 import android.content.Context;
 
-import com.download.neo.downloaddemo.DownLoadUtil.DownloadEntry;
+import com.download.neo.downloaddemo.entities.DownloadEntry;
 import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;

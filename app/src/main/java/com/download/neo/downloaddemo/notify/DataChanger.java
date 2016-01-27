@@ -1,8 +1,9 @@
-package com.download.neo.downloaddemo.DownLoadUtil;
+package com.download.neo.downloaddemo.notify;
 
 import android.content.Context;
 
-import com.download.neo.downloaddemo.DownLoadUtil.Db.EntryDao;
+import com.download.neo.downloaddemo.entities.DownloadEntry;
+import com.download.neo.downloaddemo.db.EntryDao;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

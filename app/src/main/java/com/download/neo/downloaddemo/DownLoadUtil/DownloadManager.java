@@ -3,6 +3,13 @@ package com.download.neo.downloaddemo.DownLoadUtil;
 import android.content.Context;
 import android.content.Intent;
 
+import com.download.neo.downloaddemo.core.DownloadService;
+import com.download.neo.downloaddemo.entities.DownloadEntry;
+import com.download.neo.downloaddemo.notify.DataChanger;
+import com.download.neo.downloaddemo.notify.DataWatcher;
+import com.download.neo.downloaddemo.utilities.GlobalConstants;
+import com.download.neo.downloaddemo.utilities.MyTrace;
+
 /**
  * Created by Lenovo on 2016/1/13.
  */

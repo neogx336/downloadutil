@@ -1,4 +1,4 @@
-package com.download.neo.downloaddemo.DownLoadUtil;
+package com.download.neo.downloaddemo.entities;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -30,7 +30,7 @@ public class DownloadEntry
     @DatabaseField
     public DownloadStatus status=DownloadStatus.idle;
     @DatabaseField(dataType = DataType.SERIALIZABLE)
-    HashMap<Integer,Integer> ranges;
+    public HashMap<Integer,Integer> ranges;
     @DatabaseField
     public  int percent;
 

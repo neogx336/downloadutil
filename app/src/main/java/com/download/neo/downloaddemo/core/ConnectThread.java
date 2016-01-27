@@ -1,4 +1,6 @@
-package com.download.neo.downloaddemo.DownLoadUtil;
+package com.download.neo.downloaddemo.core;
+
+import com.download.neo.downloaddemo.utilities.GlobalConstants;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

@@ -6,8 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-import com.download.neo.downloaddemo.DownLoadUtil.DownloadManager;
-import com.download.neo.downloaddemo.DownLoadUtil.MyTrace;
+import com.download.neo.downloaddemo.utilities.MyTrace;
 
 /**
  * Created by Lenovo on 2016/1/23.

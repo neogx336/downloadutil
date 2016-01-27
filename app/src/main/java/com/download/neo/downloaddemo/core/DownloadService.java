@@ -1,4 +1,4 @@
-package com.download.neo.downloaddemo.DownLoadUtil;
+package com.download.neo.downloaddemo.core;
 
 import android.annotation.TargetApi;
 import android.app.Service;
@@ -9,7 +9,11 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 
-import com.download.neo.downloaddemo.DownLoadUtil.Db.EntryDao;
+import com.download.neo.downloaddemo.entities.DownloadEntry;
+import com.download.neo.downloaddemo.db.EntryDao;
+import com.download.neo.downloaddemo.notify.DataChanger;
+import com.download.neo.downloaddemo.utilities.GlobalConstants;
+import com.download.neo.downloaddemo.utilities.MyTrace;
 
 import java.util.ArrayList;
 import java.util.HashMap;

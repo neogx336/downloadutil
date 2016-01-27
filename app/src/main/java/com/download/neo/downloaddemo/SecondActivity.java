@@ -8,12 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.download.neo.downloaddemo.DownLoadUtil.DataWatcher;
-import com.download.neo.downloaddemo.DownLoadUtil.Db.EntryDao;
-import com.download.neo.downloaddemo.DownLoadUtil.DownloadEntry;
+import com.download.neo.downloaddemo.notify.DataWatcher;
+import com.download.neo.downloaddemo.db.EntryDao;
+import com.download.neo.downloaddemo.entities.DownloadEntry;
 import com.download.neo.downloaddemo.DownLoadUtil.DownloadManager;
-import com.download.neo.downloaddemo.DownLoadUtil.GlobalConstants;
-import com.download.neo.downloaddemo.DownLoadUtil.MyTrace;
+import com.download.neo.downloaddemo.utilities.GlobalConstants;
+import com.download.neo.downloaddemo.utilities.MyTrace;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

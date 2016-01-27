@@ -1,8 +1,12 @@
-package com.download.neo.downloaddemo.DownLoadUtil;
+package com.download.neo.downloaddemo.core;
 
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+
+import com.download.neo.downloaddemo.entities.DownloadEntry;
+import com.download.neo.downloaddemo.utilities.GlobalConstants;
+import com.download.neo.downloaddemo.utilities.MyTrace;
 
 import java.io.File;
 import java.util.HashMap;

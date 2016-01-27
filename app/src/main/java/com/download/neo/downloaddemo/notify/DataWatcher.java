@@ -1,4 +1,6 @@
-package com.download.neo.downloaddemo.DownLoadUtil;
+package com.download.neo.downloaddemo.notify;
+
+import com.download.neo.downloaddemo.entities.DownloadEntry;
 
 import java.util.Observable;
 import java.util.Observer;
