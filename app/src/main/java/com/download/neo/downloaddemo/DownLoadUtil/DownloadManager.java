@@ -149,4 +149,13 @@ public class DownloadManager {
         Intent intent = new Intent(context, DownloadService.class);
         context.stopService(intent);
     }
+
+    /**
+     * 删除 DownloadEntry
+     * @param id
+     */
+    public void deleDownloadEntry(String id) {
+        DataChanger.getInstance(context).deleDownloadEntryById(id);
+    }
+
 }
