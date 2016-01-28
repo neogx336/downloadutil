@@ -395,6 +395,12 @@ public class DownloadTask implements ConnectThread.ConnectListener, DownloadThre
         msg.what = what;
         msg.obj = entry;
         mhandler.sendMessage(msg);
+//     给handler时间处事情
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 

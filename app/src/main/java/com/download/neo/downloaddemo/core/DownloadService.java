@@ -72,19 +72,18 @@ public class DownloadService extends Service {
             switch (msg.what) {
                 case NOTIFI_COMPLETED:
                 case NOTIFI_PAUSED_OR_CANCELLED:
-                    checkNext();
+                    checkNext((DownloadEntry)msg.obj);
                     break;
                 //网络异常
                 case NOTITY_NETWORK_ERROR:
-
                     break;
-
             }
             DataChanger.getInstance(context).postStatus((DownloadEntry) msg.obj);
         }
     };
 
-    private void checkNext() {
+    private void checkNext(DownloadEntry obj) {
+        mDownloadingTasks.remove(obj);
         //检查队  下下一个，从等待队列中拿出另一个出来
         DownloadEntry newentry = mWaittingQueue.poll();
         if (newentry != null) {
